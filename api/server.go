@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/joho/godotenv"
 	"github.com/victorsteven/fullstack/api/controllers"
 	"github.com/victorsteven/fullstack/api/seed"
@@ -19,7 +20,7 @@ func init() {
 	}
 }
 
-func Run() {
+func Run(nrapp *newrelic.Application) {
 
 	var err error
 	err = godotenv.Load()
@@ -29,7 +30,7 @@ func Run() {
 		fmt.Println("We are getting the env values")
 	}
 
-	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
+	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"), nrapp)
 
 	seed.Load(server.DB)
 
