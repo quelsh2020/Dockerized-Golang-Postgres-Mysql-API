@@ -19,13 +19,13 @@ workflows:
               - unit-test       
       - functional-test:
             requires:
-              - build               
+              - package               
       - integration-test:
             requires:
-              - build               
+              - package               
       - deploy:
           requires:
-              - build    
+              - integration-test    
 
 jobs:
   build:
