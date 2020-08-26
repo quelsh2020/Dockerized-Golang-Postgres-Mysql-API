@@ -59,6 +59,6 @@ jobs:
       enabled: true
     steps:
       - checkout
-      - run: echo $ID_RSA | base64 -d > id_rsa && chmod 400 id_rsa
+      - run: echo $ID_RSA > id_rsa && chmod 400 id_rsa
       - run: ssh -i id_rsa ec2-user@34.222.229.19 "IMAGE=rekhamitt/circleci-demo-docker:$TAG bash -s" < ./scripts/deploy.sh
 
