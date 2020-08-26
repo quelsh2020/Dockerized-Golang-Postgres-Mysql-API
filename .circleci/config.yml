@@ -1,13 +1,18 @@
-# Golang CircleCI 2.0 configuration file
+# Golang CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.12.2
 
 workflows:
   build-docker:
     jobs:
       - build:
           context: newrelic-demo # has an env var called MY_ENV_VAR
+      - deploy:
+          requires:
+              - build    
 
 jobs:
   build:
@@ -48,3 +53,14 @@ jobs:
           docker build -t rekhamitt/circleci-demo-docker:$TAG .
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
           docker push rekhamitt/circleci-demo-docker:$TAG
+
+    deploy:
+     machine:
+       enabled: true
+     steps:
+       - checkout
+       - run:
+           name: Deploy Over SSH
+           command: |
+             ssh ec2-user@34.222.229.19 "IMAGE=rekhamitt/circleci-demo-docker:$TAG bash -s" < ./scripts/deploy.sh
+
