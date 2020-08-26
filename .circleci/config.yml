@@ -39,7 +39,7 @@ jobs:
       #     command: apk add docker-cli
 
       - setup_remote_docker:
-          version: 19.03-8
+          version: 19.03.8
           docker_layer_caching: false
 
       # build and push Docker image
