@@ -8,6 +8,21 @@ workflows:
     jobs:
       - build:
           context: newrelic-demo # has an env var called MY_ENV_VAR
+      - code-scan:
+            requires:
+              - build
+      - unit-test:
+            requires:
+              - code-scan       
+      - package:
+            requires:
+              - unit-test       
+      - functional-test:
+            requires:
+              - build               
+      - integration-test:
+            requires:
+              - build               
       - deploy:
           requires:
               - build    
@@ -46,7 +61,52 @@ jobs:
           docker build -t rekhamitt/circleci-demo-docker:$CIRCLE_SHA1 .
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
           docker push rekhamitt/circleci-demo-docker:$CIRCLE_SHA1
+  code-scan:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
 
+      # specify any bash command here prefixed with `run: `
+      - run: echo "Successfull code-scan completed"
+  unit-test:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      # specify any bash command here prefixed with `run: `
+      - run: echo "Starting unit-testing"
+      - run: echo "Completed unit-testing"
+  package:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      # specify any bash command here prefixed with `run: `
+      - run: echo "Starting packaging application"
+      - run: echo "Completed packaging"
+  functional-test:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      # specify any bash command here prefixed with `run: `
+      - run: echo "Starting functional test"
+      - run: echo "Completed functional test"
+  integration-test:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.13
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      # specify any bash command here prefixed with `run: `
+      - run: echo "Starting integration test"
+      - run: echo "Completed testing"   
   deploy:
     machine:
       enabled: true
