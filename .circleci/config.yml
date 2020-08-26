@@ -13,7 +13,7 @@ jobs:
   build:
     docker:
       # specify the version
-      - image: circleci/golang:1.13-alpine
+      - image: circleci/golang:1.13
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -32,7 +32,14 @@ jobs:
       - run: go get -v -t -d ./...
       - run: go test -v ./...
       - run: go build -o main .
+
+      # Install via apk on alpine based images
+      # - run:
+      #     name: Install Docker client
+      #     command: apk add docker-cli
+
       - setup_remote_docker:
+          version: 19.03-8
           docker_layer_caching: false
 
       # build and push Docker image
