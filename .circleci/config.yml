@@ -7,7 +7,7 @@ workflows:
   build-docker:
     jobs:
       - build:
-          context: newrelic_demo # has an env var called MY_ENV_VAR
+          context: newrelic-demo # has an env var called MY_ENV_VAR
 
 jobs:
   build:
