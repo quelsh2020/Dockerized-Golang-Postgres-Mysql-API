@@ -2,8 +2,6 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2.1
-orbs:
-  aws-ecr: circleci/aws-ecr@6.12.2
 
 workflows:
   build-docker:
@@ -38,11 +36,6 @@ jobs:
       - run: go test -v ./...
       - run: go build -o main .
 
-      # Install via apk on alpine based images
-      # - run:
-      #     name: Install Docker client
-      #     command: apk add docker-cli
-
       - setup_remote_docker:
           version: 19.03.8
           docker_layer_caching: false
@@ -60,5 +53,7 @@ jobs:
     steps:
       - checkout
       - run: echo $ID_RSA > id_rsa && chmod 400 id_rsa
-      - run: ssh -i id_rsa ec2-user@34.222.229.19 "IMAGE=rekhamitt/circleci-demo-docker:$TAG bash -s" < ./scripts/deploy.sh
+      - run: |
+          TAG=0.1.$CIRCLE_BUILD_NUM
+          ssh -i id_rsa ec2-user@34.222.229.19 "IMAGE=rekhamitt/circleci-demo-docker:$TAG bash -s" < ./scripts/deploy.sh
 

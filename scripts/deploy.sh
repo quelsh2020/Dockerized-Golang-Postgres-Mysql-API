@@ -1,3 +1,4 @@
+echo $IMAGE
 docker ps --filter "name=golang-server"
 docker pull $IMAGE
 docker rm -f golang-server || true
